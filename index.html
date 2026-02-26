@@ -224,48 +224,47 @@
         function createLEDBoard() {
             ledBoard = new THREE.Group();
             
-            // PCB board - 竖直放置，从中心向外延伸
-            // x: 长度方向（从中心向外）
+            // PCB board - 竖直放置，轴心在板子中间（对称，旋转更稳）
+            // x: 长度方向（板子跨过轴心，对称分布）
             // y: 垂直高度方向  
-            // z: 宽度方向（LED分布在此方向）
-            const boardW = 14;  // z方向宽度
-            const boardH = 12;  // y方向高度
-            const boardD = 0.8; // x方向厚度
-            const boardLen = 18; // x方向长度（从轴心向外）
+            // z: 宽度方向（很薄）
+            const boardLen = 20;  // x方向总长度
+            const boardH = 12;    // y方向高度
+            const boardD = 0.8;   // z方向厚度
             
             const boardGeo = new THREE.BoxGeometry(boardLen, boardH, boardD);
             const boardMat = new THREE.MeshLambertMaterial({ color: 0x4a8a6a });
             const board = new THREE.Mesh(boardGeo, boardMat);
-            // 从中心向外偏移，使内侧在轴心
-            board.position.x = boardLen / 2;
+            // 轴心在板子中心（对称，旋转稳定）
+            board.position.x = 0;
             ledBoard.add(board);
             
-            // LEDs - 贴在板子表面
+            // LEDs - 8x10 矩阵，贴在板子表面
             const ledGeo = new THREE.SphereGeometry(0.5, 8, 8);
             const ledMat = new THREE.MeshBasicMaterial({ color: 0xff6b35 });
             
-            const rows = 8;
-            const cols = 10;
-            const ledSpacingY = boardH / rows;
-            const ledSpacingZ = boardW / cols;
+            const rows = 8;  // 垂直方向8排
+            const cols = 10; // 长度方向10列
             
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
                     const led = new THREE.Mesh(ledGeo, ledMat);
-                    // LED在板子正面（z正方向）
+                    // x: 沿板子长度分布（跨过轴心，-9到+9）
+                    // y: 垂直方向分布
+                    // z: 贴在板子正面
                     led.position.set(
-                        boardLen / 2,                              // x: 沿板长度居中
-                        -boardH/2 + ledSpacingY/2 + row * ledSpacingY,  // y: 垂直分布
-                        boardD/2 + 0.3                             // z: 贴在板子表面外侧
+                        -boardLen/2 + 1 + col * 1.8,            // x: 10列沿长度分布
+                        -boardH/2 + 0.75 + row * 1.35,          // y: 8排垂直分布
+                        boardD/2 + 0.3                          // z: 贴在板子表面
                     );
                     ledBoard.add(led);
                     
                     // LED glow
-                    const glowGeo = new THREE.SphereGeometry(1.0, 8, 8);
+                    const glowGeo = new THREE.SphereGeometry(0.9, 8, 8);
                     const glowMat = new THREE.MeshBasicMaterial({
                         color: 0xff6b35,
                         transparent: true,
-                        opacity: 0.3
+                        opacity: 0.25
                     });
                     const glow = new THREE.Mesh(glowGeo, glowMat);
                     glow.position.copy(led.position);
@@ -273,10 +272,16 @@
                 }
             }
             
-            // 支架连接部分（连接到中心轴）
-            const armGeo = new THREE.BoxGeometry(boardLen * 0.6, 2, 3);
-            const armMat = new THREE.MeshLambertMaterial({ color: 0x3a6a5a });
-            const arm = new THREE.Mesh(armGeo, armMat);
+            // 中心连接环（轴心位置）
+            const centerRingGeo = new THREE.CylinderGeometry(2, 2, boardH * 0.6, 16);
+            const centerRingMat = new THREE.MeshLambertMaterial({ color: 0x3a6a5a });
+            const centerRing = new THREE.Mesh(centerRingGeo, centerRingMat);
+            centerRing.rotation.z = Math.PI / 2;
+            ledBoard.add(centerRing);
+            
+            ledBoard.position.y = 5;
+            scene.add(ledBoard);
+        }
             arm.position.x = boardLen * 0.3;
             ledBoard.add(arm);
             
