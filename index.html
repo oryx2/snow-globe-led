@@ -264,22 +264,53 @@
         }
         
         function createSlipRing() {
-            const ring = new THREE.Mesh(
-                new THREE.CylinderGeometry(2.5, 2.5, 4, 16),
-                new THREE.MeshLambertMaterial({ color: 0x555555 })
+            // 滑环主体 - 空心圆柱（通孔）
+            const ringOuter = new THREE.Mesh(
+                new THREE.CylinderGeometry(3, 3, 5, 24, 1, true),  // openEnded=true 空心
+                new THREE.MeshLambertMaterial({ 
+                    color: 0x444444,
+                    side: THREE.DoubleSide
+                })
             );
-            ring.position.y = -15;
-            scene.add(ring);
+            ringOuter.position.y = -15;
+            scene.add(ringOuter);
             
-            // Gold contacts
+            // 滑环顶部/底部封口
+            const topRing = new THREE.Mesh(
+                new THREE.RingGeometry(1, 3, 24),
+                new THREE.MeshLambertMaterial({ color: 0x444444 })
+            );
+            topRing.rotation.x = -Math.PI / 2;
+            topRing.position.y = -12.5;
+            scene.add(topRing);
+            
+            const bottomRing = new THREE.Mesh(
+                new THREE.RingGeometry(1, 3, 24),
+                new THREE.MeshLambertMaterial({ color: 0x444444 })
+            );
+            bottomRing.rotation.x = Math.PI / 2;
+            bottomRing.position.y = -17.5;
+            scene.add(bottomRing);
+            
+            // 导电环（金）- 套在轴上的环
             for (let i = 0; i < 3; i++) {
                 const contact = new THREE.Mesh(
-                    new THREE.TorusGeometry(2.7, 0.2, 8, 24),
+                    new THREE.TorusGeometry(1.8, 0.3, 8, 32),
                     new THREE.MeshBasicMaterial({ color: 0xffd700 })
                 );
                 contact.rotation.x = Math.PI / 2;
-                contact.position.y = -16 + i * 1.3;
+                contact.position.y = -14 + i * 1.5;
                 scene.add(contact);
+            }
+            
+            // 电刷（固定部分，接触导电环）
+            for (let i = 0; i < 3; i++) {
+                const brush = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.5, 0.8, 2),
+                    new THREE.MeshLambertMaterial({ color: 0x666666 })
+                );
+                brush.position.set(2.5, -14 + i * 1.5, 0);
+                scene.add(brush);
             }
         }
         
