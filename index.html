@@ -224,34 +224,50 @@
         function createLEDBoard() {
             ledBoard = new THREE.Group();
             
-            // PCB board
-            const boardGeo = new THREE.BoxGeometry(20, 1, 14);
+            // PCB board - 竖直放置，从中心向外延伸
+            // 高度方向是多排LED，宽度方向是单排
+            const boardGeo = new THREE.BoxGeometry(18, 12, 0.8);
             const boardMat = new THREE.MeshLambertMaterial({ color: 0x4a8a6a });
             const board = new THREE.Mesh(boardGeo, boardMat);
+            // 竖起来，并向外偏移（从中心轴向外）
+            board.position.x = 9; // 从中心向外偏移9单位
             ledBoard.add(board);
             
-            // LEDs
-            const ledGeo = new THREE.SphereGeometry(0.8, 8, 8);
+            // LEDs - 竖直排列的多排LED（8x10布局）
+            const ledGeo = new THREE.SphereGeometry(0.6, 8, 8);
             const ledMat = new THREE.MeshBasicMaterial({ color: 0xff6b35 });
             
-            for (let i = 0; i < 6; i++) {
-                for (let j = 0; j < 4; j++) {
+            // 8排（垂直方向）x 10列（水平方向）
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 10; col++) {
                     const led = new THREE.Mesh(ledGeo, ledMat);
-                    led.position.set(-7.5 + i * 3, 0.8, -5.25 + j * 3.5);
+                    // LED位于板子表面外侧
+                    led.position.set(
+                        9 + 0.5, // 在板子外侧表面
+                        -5.25 + row * 1.5, // 垂直方向分布
+                        -6.75 + col * 1.5  // 水平方向分布
+                    );
                     ledBoard.add(led);
                     
                     // LED glow
-                    const glowGeo = new THREE.SphereGeometry(1.5, 8, 8);
+                    const glowGeo = new THREE.SphereGeometry(1.2, 8, 8);
                     const glowMat = new THREE.MeshBasicMaterial({
                         color: 0xff6b35,
                         transparent: true,
-                        opacity: 0.2
+                        opacity: 0.25
                     });
                     const glow = new THREE.Mesh(glowGeo, glowMat);
                     glow.position.copy(led.position);
                     ledBoard.add(glow);
                 }
             }
+            
+            // 支架连接部分（连接到中心轴）
+            const armGeo = new THREE.BoxGeometry(9, 2, 4);
+            const armMat = new THREE.MeshLambertMaterial({ color: 0x3a6a5a });
+            const arm = new THREE.Mesh(armGeo, armMat);
+            arm.position.x = 4.5;
+            ledBoard.add(arm);
             
             ledBoard.position.y = 5;
             scene.add(ledBoard);
