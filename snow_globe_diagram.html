@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>雪花球结构示意图</title>
+<style>
+body {
+  background: #1a1a2e;
+  color: #fff;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+h2 { margin-bottom: 10px; color: #fff; }
+.container {
+  position: relative;
+  width: 500px;
+  height: 420px;
+  background: #1a1a2e;
+}
+/* 玻璃球 */
+.globe {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border: 3px solid rgba(255,255,255,0.4);
+  border-radius: 50%;
+  background: rgba(200,230,255,0.08);
+  top: 40px;
+  left: 130px;
+}
+.globe::after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  top: 30px;
+  left: 30px;
+}
+/* 中心轴 */
+.shaft {
+  position: absolute;
+  width: 10px;
+  height: 60px;
+  background: linear-gradient(90deg, #666, #888, #666);
+  top: 200px;
+  left: 245px;
+}
+/* LED板 */
+.led-board {
+  position: absolute;
+  width: 70px;
+  height: 45px;
+  background: #2a4a3a;
+  border: 2px solid #4a8a6a;
+  top: 160px;
+  left: 215px;
+}
+.led {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff6b35, #c92a2a);
+  box-shadow: 0 0 4px #ff6b35;
+}
+/* 旋转箭头 */
+.arrow-circle {
+  position: absolute;
+  width: 100px;
+  height: 60px;
+  border: 2px dashed #0af;
+  border-radius: 50%;
+  border-bottom: none;
+  top: 170px;
+  left: 200px;
+  transform: rotate(-15deg);
+}
+.arrow-head {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 12px solid #0af;
+  top: 168px;
+  left: 285px;
+  transform: rotate(45deg);
+}
+/* 滑环 */
+.slip-ring {
+  position: absolute;
+  width: 24px;
+  height: 30px;
+  background: #555;
+  border: 2px solid #888;
+  top: 245px;
+  left: 238px;
+}
+.ring {
+  position: absolute;
+  width: 28px;
+  height: 2px;
+  background: #gold;
+  left: -2px;
+}
+/* 底座 */
+.base {
+  position: absolute;
+  width: 160px;
+  height: 60px;
+  background: linear-gradient(180deg, #555, #333);
+  top: 300px;
+  left: 170px;
+  clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+}
+.base-top {
+  position: absolute;
+  width: 140px;
+  height: 20px;
+  background: #666;
+  border-radius: 50%;
+  top: 290px;
+  left: 180px;
+}
+/* 电机 */
+.motor {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  background: #333;
+  border: 1px solid #777;
+  top: 310px;
+  left: 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: #aaa;
+}
+/* 加速度计 */
+.imu {
+  position: absolute;
+  width: 35px;
+  height: 25px;
+  background: #522;
+  border: 1px solid #a66;
+  top: 315px;
+  left: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: #faa;
+}
+/* 标签 */
+.label {
+  position: absolute;
+  font-size: 11px;
+  color: #aaa;
+}
+.label-led { top: 140px; left: 300px; color: #4a8a6a; }
+.label-imu { top: 345px; left: 340px; color: #faa; }
+.label-motor { top: 345px; left: 190px; color: #aaa; }
+.label-ring { top: 248px; left: 270px; color: #gold; }
+.label-globe { top: 20px; left: 180px; color: rgba(255,255,255,0.6); }
+
+/* 说明 */
+.info {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid #444;
+  border-radius: 5px;
+  max-width: 500px;
+}
+.info h3 { margin: 0 0 10px 0; color: #ccc; }
+.info ul { margin: 0; padding-left: 18px; color: #aaa; }
+.info li { margin: 5px 0; }
+</style>
+</head>
+<body>
+<h2>雪花球结构示意图 (滑环方案)</h2>
+<div class="container">
+  <!-- 玻璃球 -->
+  <div class="globe"></div>
+  
+  <!-- 旋转部分 -->
+  <div class="shaft"></div>
+  <div class="led-board">
+    <div class="led" style="top:5px;left:5px"></div>
+    <div class="led" style="top:5px;left:15px"></div>
+    <div class="led" style="top:5px;left:25px"></div>
+    <div class="led" style="top:5px;left:35px"></div>
+    <div class="led" style="top:5px;left:45px"></div>
+    <div class="led" style="top:5px;left:55px"></div>
+    <div class="led" style="top:15px;left:8px"></div>
+    <div class="led" style="top:15px;left:18px"></div>
+    <div class="led" style="top:15px;left:28px"></div>
+    <div class="led" style="top:15px;left:38px"></div>
+    <div class="led" style="top:15px;left:48px"></div>
+    <div class="led" style="top:15px;left:58px"></div>
+    <div class="led" style="top:25px;left:5px"></div>
+    <div class="led" style="top:25px;left:15px"></div>
+    <div class="led" style="top:25px;left:25px"></div>
+    <div class="led" style="top:25px;left:35px"></div>
+    <div class="led" style="top:25px;left:45px"></div>
+    <div class="led" style="top:25px;left:55px"></div>
+    <div class="led" style="top:35px;left:10px"></div>
+    <div class="led" style="top:35px;left:20px"></div>
+    <div class="led" style="top:35px;left:30px"></div>
+    <div class="led" style="top:35px;left:40px"></div>
+    <div class="led" style="top:35px;left:50px"></div>
+  </div>
+  <div class="arrow-circle"></div>
+  <div class="arrow-head"></div>
+  
+  <!-- 滑环 -->
+  <div class="slip-ring">
+    <div class="ring" style="top:6px"></div>
+    <div class="ring" style="top:14px"></div>
+    <div class="ring" style="top:22px"></div>
+  </div>
+  
+  <!-- 底座 -->
+  <div class="base-top"></div>
+  <div class="base"></div>
+  <div class="motor">MOTOR</div>
+  <div class="imu">IMU</div>
+  
+  <!-- 标签 -->
+  <div class="label label-led">LED矩阵板 (旋转)</div>
+  <div class="label label-imu">加速度计</div>
+  <div class="label label-motor">电机</div>
+  <div class="label label-ring">滑环</div>
+  <div class="label label-globe">玻璃球外壳 (固定)</div>
+</div>
+
+<div class="info">
+<h3>结构说明</h3>
+<ul>
+<li><strong>电机</strong>放在底座，通过中心轴驱动LED板旋转</li>
+<li><strong>滑环</strong>实现供电和数据传输，LED板无需自带电池</li>
+<li><strong>加速度计</strong>固定在底座，检测摇晃不受旋转干扰</li>
+<li><strong>玻璃球外壳</strong>固定，内部LED板高速旋转形成3D显示</li>
+</ul>
+</div>
+</body>
+</html>
